@@ -198,6 +198,8 @@ program ini merupakan implementasi dari struct yang bisa memuat berbagai tipe va
 ## Unguided 
 
 ### 1. [Operasi Dasar]
+<img width="812" height="84" alt="image" src="https://github.com/user-attachments/assets/da38c6ae-d4bf-438d-8680-9a36ecd6021f" />
+
 
 ```C++
 #include <iostream>
@@ -223,49 +225,111 @@ int main(){
 
 
 #### Output:
-<img width="1379" height="284" alt="image" src="https://github.com/user-attachments/assets/51a8cf20-135c-4bb4-8f1d-c7d091ea2a86" />
+<img width="605" height="288" alt="image" src="https://github.com/user-attachments/assets/48dbdad4-2bb1-4d8b-b33a-7e2da1c9b620" />
+
 
 Kode di atas merupakan kode untuk membuat bilangan bertipe float bisa melakukkan operasi dasar penjumlahan, pengurangan, perkalian dan pembagian, program akan meminta 2 inputan bertipe float lalu program akan mengeksekusi operasi dasar yang sudah di siapkan dan program akan langsung menghasil kan output hasil dari oprasi dasar tersebut.
 
+
 #### Full code Screenshot:
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/6a045365-2bcb-4b36-9e66-c57fcde87f3d" />
+<img width="1469" height="999" alt="image" src="https://github.com/user-attachments/assets/7a91e430-178b-437b-a5e2-6d6e8de608e4" />
 
 
 ### 2. [Mengubah Angka Menjadi String]
+<img width="818" height="177" alt="image" src="https://github.com/user-attachments/assets/d7002cdf-d9c7-4fd8-9f42-e93cce97cb39" />
 
-C++
+
+```c++
+#include <iostream>
+#include <string>
+using namespace std;
+
+string angkaKeTulisan(int n) {
+    string satuan[] = {"nol", "satu", "dua", "tiga", "empat", "lima",
+                       "enam", "tujuh", "delapan", "sembilan", "sepuluh",
+                       "sebelas"};
+
+    if (n < 12)
+        return satuan[n];
+    else if (n < 20)
+        return satuan[n - 10] + " belas";
+    else if (n < 100) {
+        int puluh = n / 10;
+        int sisa = n % 10;
+        string hasil = satuan[puluh] + " puluh";
+        if (sisa != 0)
+            hasil += " " + satuan[sisa];
+        return hasil;
+    } else if (n == 100) {
+        return "seratus";
+    }
+    return "error";
+}
+
+int main() {
+    int angka;
+    cout << "Masukkan angka (0-100): ";
+    cin >> angka;
+
+    if (angka < 0 || angka > 100) {
+        cout << "error" << endl;
+    } else {
+        cout << angka << " : " << angkaKeTulisan(angka) << endl;
+    }
+
+    return 0;
+}
+```
+
+
+### OUTPUT
+<img width="344" height="134" alt="image" src="https://github.com/user-attachments/assets/1c8c0ae9-5e7b-443d-8d17-a83bc9f50b59" />
+
+
+Program ini digunakan untuk mengubah angka menjadi tulisan dalam bahasa Indonesia untuk rentang 0 sampai 100. Fungsi angkaKeTulisan(int n) memanfaatkan array satuan[] berisi kata dari "nol" sampai "sebelas". tapi jika angka kurang dari 12, langsung dikembalikan sesuai array. Jika angka kurang dari 20, output berupa kata pada indeks n-10 ditambah kata "belas". Untuk angka puluhan (20–99), angka dibagi menjadi puluhan dan satuan. Kata "puluh" ditambahkan sesuai nilai puluh, dan jika ada sisa satuan, maka ditambahkan lagi. Jika angka sama dengan 100, hasilnya "seratus". Selain itu, program akan menampilkan "error".
+
+
+### FULL CODE SCREENSHOT
+<img width="583" height="939" alt="image" src="https://github.com/user-attachments/assets/eed40472-cb9c-4a28-8ccf-f7d4867c2021" />
+
+
+### 3. SOAL.3
+<img width="608" height="236" alt="image" src="https://github.com/user-attachments/assets/41ffe8cf-6117-4c8b-b0bb-d4785477ea04" />
+
+
+```C++
 #include <iostream>
 using namespace std;
 
 int main() {
     int n;
-    cout << "";
+    cout << "input: ";
     cin >> n;
 
-    string satuan[] = {"nol", "satu", "dua", "tiga", "empat", "lima",
-                       "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"};
+    cout << "output:" << endl;
 
-    string hasil;
+    for (int i = n; i >= 0; i--) {
+        for (int s = 0; s < n - i; s++) {
+            cout << " ";
+        }
 
-    if (n < 12) {
-        hasil = satuan[n];
-    } else if (n < 20) {
-        hasil = satuan[n - 10] + " belas";
-    } else if (n < 100) {
-        int puluh = n / 10;
-        int sisa = n % 10;
-        hasil = satuan[puluh] + " puluh";
-        if (sisa != 0) hasil += " " + satuan[sisa];
-    } else if (n == 100) {
-        hasil = "seratus";
-    } else {
-        hasil = "angka melebihi kapasitas ";
+        for (int j = i; j >= 1; j--) {
+            cout << j;
+        }
+
+        cout << "*";
+
+        for (int j = 1; j <= i; j++) {
+            cout << j;
+        }
+
+        cout << endl;
     }
-
-    cout << n << " : " << hasil << endl;
 
     return 0;
 }
+```
+
 
 #### Output:
 <img width="1377" height="303" alt="image" src="https://github.com/user-attachments/assets/e3aa73c0-670d-486c-9c64-37f1a2bd2983" />
@@ -309,12 +373,14 @@ int main() {
 
 
 #### Output:
-<img width="1359" height="272" alt="image" src="https://github.com/user-attachments/assets/73b7a654-53b6-47d9-ac51-aba9c1c2be62" />
+<img width="311" height="218" alt="image" src="https://github.com/user-attachments/assets/6643ed29-2c30-4180-bc5c-bfbaec30b18f" />
+
 
 Kode ini membuat urutan angka yang berbentuk segitiga sama sisi, pengguna akan menginput variable bertipe int lalu akan masuk ke perulangan yang akan menulis ulang angka yang di inputkan dari yang terbesar sampai terkecil dengan di batasi tanda bintang setiap for memilki fungsi masing-masing untuk bisa membuat bentuk segitiga.
 
 #### Full code Screenshot:
-<img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/8b954c7e-df0a-4c50-ba9c-28200fb562f2" />
+<img width="560" height="965" alt="image" src="https://github.com/user-attachments/assets/57b26bbb-4eae-44c4-ad48-feeafcc129f0" />
+
 
 
 ## Kesimpulan
