@@ -1,4 +1,4 @@
-## Repository praktikum algoritma dan struktur data
+## praktikum algoritma dan struktur data
 
 <pre>
 Nama : Rizky Al Kahfi
