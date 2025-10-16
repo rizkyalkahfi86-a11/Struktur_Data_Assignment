@@ -308,7 +308,7 @@ Program ini digunakan untuk mengubah angka menjadi tulisan dalam bahasa Indonesi
 
 
 
-C++
+```C++
 #include <iostream>
 using namespace std;
 
@@ -335,6 +335,7 @@ int main() {
 
     return 0;
 }
+```
 
 
 #### Output:
