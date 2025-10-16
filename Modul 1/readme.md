@@ -199,7 +199,7 @@ program ini merupakan implementasi dari struct yang bisa memuat berbagai tipe va
 
 ### 1. [Operasi Dasar]
 
-C++
+```C++
 #include <iostream>
 using namespace std;
 
@@ -207,13 +207,11 @@ int main(){
     float a;
     float b;
 
-    //Inputan
      cout << "masukkan angka 1: " << endl;
      cin >> a;
      cout << "masukkan angka 2: " << endl;
      cin >> b;
 
-    //Operasi Dasar
     cout << "Hasil Penjumlahan = " << (a+b) << endl;
     cout << "Hasil Pengurangan = " << (a-b) << endl;
     cout << "Hasil Perkalian = " << (a*b) << endl;
@@ -221,6 +219,8 @@ int main(){
 
     return 0;
 }
+```
+
 
 #### Output:
 <img width="1379" height="284" alt="image" src="https://github.com/user-attachments/assets/51a8cf20-135c-4bb4-8f1d-c7d091ea2a86" />
