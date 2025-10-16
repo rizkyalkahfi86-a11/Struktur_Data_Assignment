@@ -201,6 +201,9 @@ program ini merupakan implementasi dari struct yang bisa memuat berbagai tipe va
 <img width="812" height="84" alt="image" src="https://github.com/user-attachments/assets/da38c6ae-d4bf-438d-8680-9a36ecd6021f" />
 
 
+
+
+
 ```C++
 #include <iostream>
 using namespace std;
@@ -237,6 +240,9 @@ Kode di atas merupakan kode untuk membuat bilangan bertipe float bisa melakukkan
 
 ### 2. [Mengubah Angka Menjadi String]
 <img width="818" height="177" alt="image" src="https://github.com/user-attachments/assets/d7002cdf-d9c7-4fd8-9f42-e93cce97cb39" />
+
+
+
 
 
 ```c++
@@ -297,6 +303,9 @@ Program ini digunakan untuk mengubah angka menjadi tulisan dalam bahasa Indonesi
 <img width="608" height="236" alt="image" src="https://github.com/user-attachments/assets/41ffe8cf-6117-4c8b-b0bb-d4785477ea04" />
 
 
+
+
+
 ```C++
 #include <iostream>
 using namespace std;
@@ -342,6 +351,11 @@ Code di atas digunakan untuk mengubah angka atau tipe integer menjadi string, ja
 
 
 ### 3. [Buat Segitiga Angka]
+<img width="573" height="245" alt="image" src="https://github.com/user-attachments/assets/5c9cf07e-531c-4ffa-b213-742421839d80" />
+
+
+
+
 
 C++
 #include <iostream>
