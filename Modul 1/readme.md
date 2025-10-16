@@ -238,6 +238,7 @@ Kode di atas merupakan kode untuk membuat bilangan bertipe float bisa melakukkan
 <img width="1469" height="999" alt="image" src="https://github.com/user-attachments/assets/7a91e430-178b-437b-a5e2-6d6e8de608e4" />
 
 
+
 ### 2. [Mengubah Angka Menjadi String]
 <img width="818" height="177" alt="image" src="https://github.com/user-attachments/assets/d7002cdf-d9c7-4fd8-9f42-e93cce97cb39" />
 
@@ -298,56 +299,6 @@ Program ini digunakan untuk mengubah angka menjadi tulisan dalam bahasa Indonesi
 ### FULL CODE SCREENSHOT
 <img width="583" height="939" alt="image" src="https://github.com/user-attachments/assets/eed40472-cb9c-4a28-8ccf-f7d4867c2021" />
 
-
-### 3. SOAL.3
-<img width="608" height="236" alt="image" src="https://github.com/user-attachments/assets/41ffe8cf-6117-4c8b-b0bb-d4785477ea04" />
-
-
-
-
-
-```C++
-#include <iostream>
-using namespace std;
-
-int main() {
-    int n;
-    cout << "input: ";
-    cin >> n;
-
-    cout << "output:" << endl;
-
-    for (int i = n; i >= 0; i--) {
-        for (int s = 0; s < n - i; s++) {
-            cout << " ";
-        }
-
-        for (int j = i; j >= 1; j--) {
-            cout << j;
-        }
-
-        cout << "*";
-
-        for (int j = 1; j <= i; j++) {
-            cout << j;
-        }
-
-        cout << endl;
-    }
-
-    return 0;
-}
-```
-
-
-#### Output:
-<img width="1377" height="303" alt="image" src="https://github.com/user-attachments/assets/e3aa73c0-670d-486c-9c64-37f1a2bd2983" />
-
-
-Code di atas digunakan untuk mengubah angka atau tipe integer menjadi string, jadi si program akan meminta input berupa int lalu program akan mengecek di bagian if else apakah sesuai dengan aturan jika iya makan angka tersebut akan diubah lalu jika angka puluhan maka akan ada tambahan berupa string yang sudah di siapkan di string satuan (buat string satuan []) dan jika angkanya melebihi kapasitas maka output yang keluar "angka melebihi kapasitas".
-
-#### Full code Screenshot:
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/e27a31c1-a608-4d4d-92d8-f5b0aa638767" />
 
 
 ### 3. [Buat Segitiga Angka]
