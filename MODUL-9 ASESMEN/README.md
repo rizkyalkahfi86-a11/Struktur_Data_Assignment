@@ -1,1 +1,9 @@
+# OUTPUT ASSEMENT
 
+# SOAL-1
+
+# SOAL-2
+
+# SOAL-3
+
+# SOAL-4
