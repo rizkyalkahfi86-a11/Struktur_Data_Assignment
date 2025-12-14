@@ -416,3 +416,18 @@ int main() {
 ```
 Program menambahkan beberapa data ke list, menampilkan isi list, lalu melakukan operasi penghapusan dan menampilkan hasil akhirnya.
 
+#### Output:
+<img width="943" height="411" alt="image" src="https://github.com/user-attachments/assets/4b3765f5-051f-4559-9924-161db27db7cf" />
+
+Program ini digunakan untuk mengelola data secara dinamis dengan menerapkan struktur Single Linked List, sehingga data dapat ditambah, dihapus, dan ditampilkan menggunakan konsep pointer dalam bahasa C++.
+
+<img width="1115" height="968" alt="image" src="https://github.com/user-attachments/assets/ea560de8-25cb-44a5-9f05-a57754a9765e" />
+
+<img width="1073" height="789" alt="image" src="https://github.com/user-attachments/assets/ab9748c9-85a1-4879-afe2-d128e71507fe" />
+
+
+
+
+
+
+
