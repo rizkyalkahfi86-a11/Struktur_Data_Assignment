@@ -585,7 +585,6 @@ int main() {
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9c2d0951-4254-4b85-b6c9-c32be278f817" />
 
-
 Program ini dibuat untuk mengelola data film bioskop menggunakan struktur data Doubly Linked List. Setiap node menyimpan informasi berupa kode film, judul, dan tahun rilis. Program mampu menambahkan data ke akhir list, menampilkan seluruh data, mencari film berdasarkan kode, serta menghapus data dari awal, akhir, maupun tengah list. Selain itu, program juga mencegah terjadinya duplikasi data berdasarkan kode film. Secara keseluruhan, program ini membantu memahami penggunaan pointer, manajemen memori dinamis, serta cara kerja Doubly Linked List dalam pengolahan data secara dinamis.
 
 ## Full Code ScreenShot
