@@ -581,43 +581,5 @@ int main() {
     return 0;
 }
 
-## Output
-
-![Output Program](https://github.com/user-attachments/assets/9c2d0951-4254-4b85-b6c9-c32be278f817)
-
----
-
-## Full Code Screenshot
-
-![Full Code 1](https://github.com/user-attachments/assets/adfaeebe-0753-4697-8450-e2bf65a5035b)
-
-![Full Code 2](https://github.com/user-attachments/assets/8b08bb9e-59fc-4591-b1c9-a67f58790587)
-
-![Full Code 3](https://github.com/user-attachments/assets/5c38e52e-1164-4d83-a944-04c97fb6d1d4)
-
----
-
-## Kesimpulan
-
-Ringkasan dan interpretasi pandangan penulis dari hasil praktikum dan pembelajaran yang didapat.  
-Pada modul ini dapat disimpulkan bahwa struktur data **Doubly Linked List** sangat efektif digunakan untuk mengelola data secara dinamis karena setiap node memiliki dua pointer, yaitu menunjuk ke node berikutnya dan node sebelumnya. Hal ini memudahkan proses penelusuran, pencarian, penambahan, serta penghapusan data tanpa perlu memindahkan seluruh elemen dalam list.
-
-Program ini dibuat untuk mengelola data film bioskop menggunakan struktur data **Doubly Linked List**. Setiap node menyimpan informasi berupa kode film, judul, dan tahun rilis. Secara keseluruhan, program ini membantu memahami penggunaan pointer, manajemen memori dinamis, serta cara kerja Doubly Linked List dalam pengolahan data secara dinamis.
-
----
-
-## Referensi
-
-[1] I. Holm, Narrator, and J. Fullerton-Smith, Producer, *How to Build a Human* [DVD]. London: BBC, 2002.
-
-
-Keluaran:
-tangkapan layar
-
-Tangkapan Layar Kode Lengkap:
-tangkapan layar
-
-
-
-
-
+#### Output
+<img width="1919" height="1076" alt="image" src="https://github.com/user-attachments/assets/627cd845-1bd7-4641-b43b-2508ea41ae41" />
