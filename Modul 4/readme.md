@@ -425,6 +425,18 @@ Program ini digunakan untuk mengelola data secara dinamis dengan menerapkan stru
 
 <img width="1073" height="789" alt="image" src="https://github.com/user-attachments/assets/ab9748c9-85a1-4879-afe2-d128e71507fe" />
 
+## Kesimpulan
+Berdasarkan hasil praktikum dan pembelajaran pada modul ini, dapat disimpulkan bahwa mahasiswa mempelajari cara membuat, menambah, menghapus, serta menampilkan node pada struktur data linked list dengan memanfaatkan konsep pointer. Selain itu, dipelajari pula penggunaan beberapa fungsi penting seperti insertFirst, insertLast, deleteFirst, deleteLast, dan nbList. Secara keseluruhan, modul ini melatih pemahaman mengenai manajemen memori serta hubungan antar data yang bersifat dinamis.
+
+## Referensi
+[1] I. Holm, Narrator, and J. Fullerton-Smith, Producer, How to Build a Human [DVD]. London: BBC; 2002.
+
+Keluaran:
+tangkapan layar
+
+Tangkapan Layar Kode Lengkap:
+tangkapan layar
+
 
 
 
