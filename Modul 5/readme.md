@@ -1,1 +1,636 @@
+# <h1 align="center">Laporan Praktikum Modul 5 Singly Linked List (Bagian 2) </h1>
+<p align="center">Rizky Al Kahfi</p>
+
+## Dasar Teori
+Operasi Searching
+
+Searching adalah proses mencari node tertentu dalam list berdasarkan suatu kriteria (misalnya nama buah atau nilai tertentu)
+Jika pointer next sudah NULL (ujung list) dan data belum ditemukan, maka data tidak ada di dalam list.
+Jenis-jenis searching dalam program:
+- FindNodeByData() → mencari node berdasarkan nama buah.
+- FindNodeByAddress() → mencari node berdasarkan alamat memori.
+- FindNodeByRange() → mencari node yang memiliki harga dalam rentang tertentu.
+Dengan adanya fungsi searching ini, proses seperti insertAfter, deleteAfter, atau updateAfter dapat dilakukan dengan lebih mudah karena kita bisa menemukan node acuan (prev) terlebih dahulu.
+## Guided 
+
+### 1. [listbuah.h]
+
+```C++
+#ifndef LISTBUAH_H
+#define LISTBUAH_H
+#define Nil NULL
+
+#include <iostream>
+using namespace std;
+
+struct buah {
+    string nama;
+    int jumlah;
+    float harga;
+};
+
+typedef buah dataBuah;
+typedef struct node *address;
+
+struct node {
+    dataBuah isidata;
+    address next;
+};
+
+struct linkedlist {
+    address first;
+};
+
+
+bool isEmpty(linkedlist List);
+void createList(linkedlist &List);
+address alokasi(string nama, int jumlah, float harga);
+void dealokasi(address &node);
+void printList(linkedlist List);
+void insertFirst(linkedlist &List, address nodeBaru);
+void insertAfter(linkedlist &List, address nodeBaru, address prev);
+void insertLast(linkedlist &List, address nodeBaru);
+void delFirst(linkedlist &List);
+void delLast(linkedlist &list);
+void delAfter(linkedlist &List, address nodeHapus, address nodePrev);
+int nbList(linkedlist List);
+void deleteList(linkedlist &List);
+
+//materi modul 5 (part 1 update)
+void updateFirst(linkedlist &List);
+void updateLast(linkedlist &List);
+void updateAfter(linkedlist &List, address prev);
+
+// materi modul 5 (part 2, searching)
+void FindNodeByData(linkedlist List, string data);
+void FindNodeByAddress(linkedlist List, address node);
+void FindNodeByRange(linkedlist List, float hargaAwal, float hargaAkhir);
+
+#endif
+```
+Program ini dibuat untuk mengelola data buah menggunakan struktur data linked list.
+Dengan program ini, kita bisa:
+Menyimpan data buah (nama, jumlah, harga) secara dinamis, menambah, menghapus, atau memperbarui data buah di mana saja dalam list, mencari data buah berdasarkan nama, alamat node, atau rentang harga, menampilkan semua data buah yang tersimpan dalam list.
+
+### 2. [listbuah.cpp]
+
+```C++
+#include "buah.h"
+#include <iostream>
+using namespace std;
+
+//fungsi untuk cek apakah list kosong atau tidak
+bool isEmpty(linkedlist List) {
+    if(List.first == NULL){
+        return true; 
+    } else {
+        return false;
+    }
+}
+
+//pembuatan linked list kosong
+void createList(linkedlist &List) {
+    List.first = NULL;
+}
+
+//pembuatan node baru dengan menerapkan manajemen memori
+address alokasi(string nama, int jumlah, float harga) { 
+    address nodeBaru = new node; 
+    nodeBaru->isidata.nama = nama;
+    nodeBaru->isidata.jumlah = jumlah; 
+    nodeBaru->isidata.harga = harga;
+    nodeBaru->next = NULL;
+    return nodeBaru;
+}
+
+//penghapusan node dengan menerapkan manajemen memori
+void dealokasi(address &node) {
+    node->next = NULL;
+    delete node;
+}
+
+//prosedur-prosedur untuk insert / menambahkan node baru kedalam list
+void insertFirst(linkedlist &List, address nodeBaru) {
+    nodeBaru->next = List.first; 
+    List.first = nodeBaru;
+}
+
+void insertAfter(linkedlist &List, address nodeBaru, address Prev) {
+    if (Prev != NULL) {
+        nodeBaru->next = Prev->next;
+        Prev->next = nodeBaru;
+    } else {
+        cout << "Node sebelumnya tidak valid!" << endl;
+    }
+}
+
+void insertLast(linkedlist &List, address nodeBaru) {
+    if (isEmpty(List)) {
+        List.first = nodeBaru;
+    } else {
+        address nodeBantu = List.first;
+        while (nodeBantu->next != NULL) {
+            nodeBantu = nodeBantu->next;
+        }
+        nodeBantu->next = nodeBaru;
+    }
+}
+
+//prosedur-prosedur untuk delete / menghapus node yang ada didalam list
+void delFirst(linkedlist &List){
+    address nodeHapus;
+    if (isEmpty(List) == false) {
+        nodeHapus = List.first;
+        List.first = List.first->next;
+        nodeHapus->next = NULL;
+        dealokasi(nodeHapus);
+        cout << "Node pertama berhasil terhapus!" << endl;
+    } else {
+        cout << "List kosong!" << endl;
+    }
+}
+
+void delLast(linkedlist &List){
+    address nodeHapus, nodePrev;
+    if(isEmpty(List) == false){
+        nodeHapus = List.first;
+        if(nodeHapus->next == NULL){
+            List.first->next = NULL;
+            dealokasi(nodeHapus);
+        } else { 
+            while(nodeHapus->next != NULL){
+                nodePrev = nodeHapus; 
+                nodeHapus = nodeHapus->next;
+            }
+            nodePrev->next = NULL; 
+            dealokasi(nodeHapus);
+        }
+        cout << "Node terakhir berhasil terhapus!" << endl;
+    } else {
+        cout << "list kosong" << endl;
+    }
+}
+
+void delAfter(linkedlist &List, address nodeHapus, address nodePrev){
+    if(isEmpty(List) == true){
+        cout << "List kosong!" << endl;
+    } else { //jika list tidak kosong
+        if (nodePrev != NULL && nodePrev->next != NULL) { 
+            nodeHapus = nodePrev->next;       
+            nodePrev->next = nodeHapus->next;  
+            nodeHapus->next = NULL;         
+            dealokasi(nodeHapus);
+            cout << "Node setelah node " << nodePrev->isidata.nama << " berhasil terhapus!" << endl;
+        } else {
+            cout << "Node sebelumnya (prev) tidak valid!" << endl;
+        }
+    }
+}
+
+//prosedur untuk menampilkan isi list
+void printList(linkedlist List) {
+    if (isEmpty(List)) {
+        cout << "List kosong." << endl;
+    } else {
+        address nodeBantu = List.first;
+        while (nodeBantu != NULL) { 
+            cout << "Nama Buah : " << nodeBantu->isidata.nama << ", Jumlah : " << nodeBantu->isidata.jumlah << ", Harga : " << nodeBantu->isidata.harga << endl;
+            nodeBantu = nodeBantu->next;
+        }
+    }
+}
+
+//function untuk menampilkan jumlah node didalam list
+int nbList(linkedlist List) {
+    int count = 0;
+    address nodeBantu = List.first;
+    while (nodeBantu != NULL) {
+        count++;
+        nodeBantu = nodeBantu->next; 
+    }
+    return count;
+}
+
+//prosedur untuk menghapus list (menghapus semua node didalam list)
+void deleteList(linkedlist &List){
+    address nodeBantu, nodeHapus;
+    nodeBantu = List.first;
+    while(nodeBantu != NULL){
+        nodeHapus = nodeBantu;
+        nodeBantu = nodeBantu->next;
+        dealokasi(nodeHapus); 
+    }
+    List.first = NULL; 
+    cout << "List berhasil terhapus!" << endl;
+}
+
+/*----- MATERI PERTEMUAN 5 - SINGLY LINKED LIST (BAGIAN KEDUA) - PART 1 (UPDATE) -----*/
+//prosedur-prosedur untuk melakukan update data node
+void updateFirst(linkedlist List){
+    if(isEmpty(List) == true){
+        cout << "List kosong!" << endl;
+    } else {
+        cout << "Masukkan update data node pertama : " << endl;
+        cout << "Nama buah : ";
+        cin >> List.first->isidata.nama;
+        cout << "Jumlah : ";
+        cin >> List.first->isidata.jumlah;
+        cout << "Harga : ";
+        cin >> List.first->isidata.harga;
+        cout << "Data Berhasil Diupdate!" << endl;
+        cout << endl;
+    }
+}
+
+void updateLast(linkedlist List){
+    if (isEmpty(List) == true) {
+        cout << "List Kosong!" << endl;
+    } else {
+        address nodeBantu = List.first;
+        while (nodeBantu->next != NULL) {
+            nodeBantu = nodeBantu->next;
+        }
+        cout << "masukkan update data node terakhir : " << endl;
+        cout << "Nama buah : ";
+        cin >> nodeBantu->isidata.nama;
+        cout << "Jumlah : ";
+        cin >> nodeBantu->isidata.jumlah;
+        cout << "Harga : ";
+        cin >> nodeBantu->isidata.harga;
+        cout << "Data Berhasil Diupdate!" << endl;
+        cout << endl;
+    }
+}
+
+void updateAfter(linkedlist List, address nodePrev){
+    if(isEmpty(List) == true){
+        cout << "List kosong!" << endl;
+    } else {
+        if (nodePrev != NULL && nodePrev->next != NULL){
+            address nodeBantu = nodePrev->next;
+            cout << "masukkan update data node setelah node " << nodePrev->isidata.nama << " : " << endl;
+            cout << "Nama buah : ";
+            cin >> nodeBantu->isidata.nama;
+            cout << "Jumlah : ";
+            cin >> nodeBantu->isidata.jumlah;
+            cout << "Harga : ";
+            cin >> nodeBantu->isidata.harga;
+            cout << "Data Berhasil Diupdate!" << endl;
+            cout << endl;
+        } else {
+            cout << "Node sebelumnya (prev) tidak valid!" << endl;
+        }
+    }
+}
+
+/*----- MATERI PERTEMUAN 5 - SINGLY LINKED LIST (BAGIAN KEDUA) - PART 2 (SEARCHING) -----*/
+//prosedur-prosedur untuk searching data
+//prosedur untuk mencari node berdasarkan data
+void FindNodeByData(linkedlist list, string data){
+    if(isEmpty(list) == true){
+        cout << "List kosong!" << endl;
+    } else {
+        address nodeBantu = list.first;
+        int posisi = 0;
+        bool found = false;
+        while(nodeBantu != NULL){
+            posisi++;
+            if(nodeBantu->isidata.nama == data){
+                cout << "Data " << data << " ditemukan pada posisi ke-" << posisi << "!" << endl;
+                cout << "Nama Buah : " << nodeBantu->isidata.nama << ", Jumlah : " << nodeBantu->isidata.jumlah << ", Harga : " << nodeBantu->isidata.harga << endl;
+                found = true;
+                break;
+            }
+            nodeBantu = nodeBantu->next;
+        }
+        if(found == false){
+            cout << "Node dengan data " << data << " tidak ditemukan!" << endl;
+        }
+    }
+    cout << endl;
+}
+
+//prosedur untuk mencari node berdasarkan alamat node
+void FindNodeByAddress(linkedlist list, address node) {
+    if(isEmpty(list) == true) {
+        cout << "List kosong!" << endl;
+    } else {
+        address nodeBantu = list.first;
+        int posisi = 0;
+        bool found = false;
+        while (nodeBantu != NULL) {
+            posisi++;
+            if(nodeBantu == node) {
+                cout << "Node ditemukan pada posisi ke-" << posisi << "!" << endl;
+                cout << "Alamat node : " << nodeBantu << endl;
+                cout << "Nama Buah : " << nodeBantu->isidata.nama << ", Jumlah : " << nodeBantu->isidata.jumlah << ", Harga : " << nodeBantu->isidata.harga << endl;
+                found = true;
+                break;
+            }
+            nodeBantu = nodeBantu->next;
+        }
+        if(found == false) {
+            cout << "Node dengan alamat " << node << " tidak ditemukan dalam list!" << endl;
+        }
+    }
+    cout << endl;
+}
+
+//prosedur untuk mencari node berdasarkan range data (range harga)
+void FindNodeByRange(linkedlist list, float hargaAwal, float hargaAkhir) {
+    if(isEmpty(list) == true) {
+        cout << "List kosong!" << endl;
+    } else {
+        address nodeBantu = list.first;
+        int posisi = 0;
+        bool found = false;
+        cout << "--- Buah dalam range harga " << hargaAwal << " - " << hargaAkhir << " ---" << endl;
+        cout << "-------------------------------------------" << endl;
+        while (nodeBantu != NULL) {
+            posisi++;
+            float harga = nodeBantu->isidata.harga;
+            if(harga >= hargaAwal && harga <= hargaAkhir) {
+                cout << "Data ditemukan pada posisi ke-" << posisi << " :" << endl;
+                cout << "Nama Buah : " << nodeBantu->isidata.nama << ", Jumlah : " << nodeBantu->isidata.jumlah << ", Harga : " << nodeBantu->isidata.harga << endl;
+                cout << "-------------------------------------------" << endl;
+                found = true;
+            }
+            nodeBantu = nodeBantu->next;
+        }
+        if(found == false) {
+            cout << "Tidak ada data buah dalam range harga tersebut!" << endl;
+            cout << "-------------------------------------------" << endl;
+        }
+    }
+    cout << endl;
+}
+
+```
+Program di atas adalah implementasi struktur data singly linked list dalam bahasa C++ untuk menyimpan data buah yang berisi:
+- nama buah (string)
+- jumlah buah (int)
+- harga buah (float)
+
+### 3. [main.cpp]
+
+```C++
+#include "buah.h"
+
+#include<iostream>
+using namespace std;
+
+int main(){
+    linkedlist List;
+    address nodeA, nodeB, nodeC, nodeD, nodeE = NIL;
+    createList(List);
+
+    dataBuah dtBuah;
+
+    nodeA = alokasi("Apel", 100, 20000);
+    nodeB = alokasi("Cemangka", 75, 21000);
+    nodeC = alokasi("Apple", 87, 20000);
+    nodeD = alokasi("Tomato", 43, 21000);
+    nodeE = alokasi("Duren", 70, 50000);
+
+    insertFirst(List, nodeA);
+    insertLast(List, nodeB);
+    insertAfter(List, nodeC, nodeA);
+    insertAfter(List, nodeD, nodeC);
+    insertLast(List, nodeE);
+
+    cout << "--- ISI LIST SETELAH DILAKUKAN INSERT ---" << endl;
+    printList(List);
+    cout << "jumlah node: " << nbList(List) << endl;
+    cout << endl;
+
+    updateFirst(List);
+    updateLast(List);
+    updateAfter(List, nodeD);
+
+    cout << "--- ISI LIST SETELAH DILAKUKAN UPDATE ---" << endl;
+    printList(List);
+    cout << "jumlah node : " << nbList(List) << endl;
+    cout << endl;
+
+    FindNodeByData(List, "kalpa");
+    FindNodeByAddress(List, nodeC);
+    FindNodeByRange(List, 50, 1000);
+
+    delFirst(List);
+    delLast(List);
+    delAfter(List, nodeA, nodeB);
+
+     cout << "--- ISI LIST SETELAH DILAKUKAN DELETE ---" << endl;
+    printList(List);
+    cout << "jumlah node : " << nbList(List) << endl;
+    cout << endl;
+
+     deleteList(List);
+    cout << "--- ISI LIST SETELAH DILAKUKAN DELETE ---" << endl;
+    printList(List);
+    cout << "Jumlah Node: " << nbList(List) << endl;
+    cout << endl;
+    return 0;
+}
+
+```
+Program main() di atas adalah program utama untuk menguji semua fungsi linked list yang sudah kamu buat di file buah.cpp.
+
+## Unguided 
+Latihan soal ini mengangkat tema pengelolaan data buku, dengan tujuan menentukan total harga buku yang dikelola.
+### 1. [Listbuku.h]
+
+```C++
+#ifndef LISTBUKU_H
+#define LISTBUKU_H
+#define Nil NULL
+
+#include <iostream>
+using namespace std;
+
+// Struktur data buku
+struct buku {
+    string judul;
+    string penulis;
+    int harga;
+};
+
+typedef buku infotype;
+typedef struct Node *address;
+
+// Node Linked List
+struct Node {
+    infotype info;
+    address next;
+};
+
+// Struktur List
+struct List {
+    address first;
+};
+
+// Deklarasi fungsi
+void createList(List &L);
+bool isEmpty(List L);
+address alokasi(string judul, string penulis, int harga);
+void dealokasi(address &P);
+void insertLast(List &L, address P);
+void printInfo(List L);
+address findBuku(List L, string judul);
+void updateBuku(List &L, string judulCari, string penulisBaru, int hargaBaru);
+int totalHarga(List L);
+
+#endif
+
+```
+
+```C++
+//listbuku.cpp
+#include "listbuku.h"
+
+void createList(List &L) {
+    L.first = Nil;
+}
+
+bool isEmpty(List L) {
+    return (L.first == Nil);
+}
+
+address alokasi(string judul, string penulis, int harga) {
+    address P = new Node;
+    P->info.judul = judul;
+    P->info.penulis = penulis;
+    P->info.harga = harga;
+    P->next = Nil;
+    return P;
+}
+
+void dealokasi(address &P) {
+    delete P;
+    P = Nil;
+}
+
+void insertLast(List &L, address P) {
+    if (isEmpty(L)) {
+        L.first = P;
+    } else {
+        address Q = L.first;
+        while (Q->next != Nil) {
+            Q = Q->next;
+        }
+        Q->next = P;
+    }
+}
+
+void printInfo(List L) {
+    if (isEmpty(L)) {
+        cout << "List buku kosong." << endl;
+    } else {
+        address P = L.first;
+        while (P != Nil) {
+            cout << "Judul Buku : " << P->info.judul << endl;
+            cout << "Penulis    : " << P->info.penulis << endl;
+            cout << "Harga      : " << P->info.harga << endl;
+            cout << "---------------------------" << endl;
+            P = P->next;
+        }
+    }
+}
+
+address findBuku(List L, string judul) {
+    address P = L.first;
+    while (P != Nil && P->info.judul != judul) {
+        P = P->next;
+    }
+    return P;
+}
+
+void updateBuku(List &L, string judulCari, string penulisBaru, int hargaBaru) {
+    address P = findBuku(L, judulCari);
+    if (P != Nil) {
+        P->info.penulis = penulisBaru;
+        P->info.harga = hargaBaru;
+        cout << "Data buku \"" << judulCari << "\" berhasil diperbarui!" << endl;
+    } else {
+        cout << "Buku \"" << judulCari << "\" tidak ditemukan dalam list." << endl;
+    }
+}
+
+int totalHarga(List L) {
+    address P = L.first;
+    int total = 0;
+    while (P != Nil) {
+        total += P->info.harga;
+        P = P->next;
+    }
+    return total;
+}
+
+```
+
+```C++
+//main.cpp
+#include "listbuku.h"
+
+int main() {
+    List L;
+    createList(L);
+
+    insertLast(L, alokasi("Laskar Pelangi", "Andrea Hirata", 85000));
+    insertLast(L, alokasi("Negeri 5 Menara", "Ahmad Fuadi", 78000));
+    insertLast(L, alokasi("Bumi", "Tere Liye", 90000));
+    insertLast(L, alokasi("Dilan 1990", "Pidi Baiq", 75000));
+
+    cout << "=== Data Buku Perpustakaan ===" << endl;
+    printInfo(L);
+
+    cout << "\nCari buku 'Bumi':" << endl;
+    address cari = findBuku(L, "Bumi");
+    if (cari != Nil)
+        cout << "Buku ditemukan! Penulis: "
+             << cari->info.penulis
+             << ", Harga: Rp " << cari->info.harga << endl;
+    else
+        cout << "Buku tidak ditemukan." << endl;
+
+    cout << "\nUpdate buku 'Laskar Pelangi'" << endl;
+    updateBuku(L, "Laskar Pelangi", "Andrea Hirata", 90000);
+
+    cout << "\n=== Data Setelah Update ===" << endl;
+    printInfo(L);
+
+    int total = totalHarga(L);
+    cout << "\nTotal harga semua buku: Rp " << total << endl;
+
+    return 0;
+}
+
+```
+
+#### Output:
+<img width="1051" height="926" alt="image" src="https://github.com/user-attachments/assets/d39cd0ba-a662-4c0e-bbff-6e71b6156141" />
+
+#### Full code Screenshot:
+<img width="1590" height="1045" alt="image" src="https://github.com/user-attachments/assets/5429a4bb-08fa-4fc3-a794-bbaa26f8859a" />
+
+
+
+## Kesimpulan
+Ringkasan dan interpretasi pandangan penulis dari hasil praktikum dan pembelajaran yang didapat.
+Pada modul ini dipelajari cara membuat, menambah, menampilkan, memperbarui, serta mencari node pada struktur data linked list menggunakan pointer berdasarkan judul buku dan alamat node. Selain itu, program juga dapat menghitung total harga buku yang tersimpan dalam list.
+
+Secara keseluruhan, program bertema buku ini membantu penulis dalam memahami konsep manajemen memori dinamis, penggunaan pointer, dan penerapan struktur data Single Linked List. Materi yang dipelajari masih berkaitan dengan modul sebelumnya, namun pada program ini terdapat pengembangan fitur tambahan berupa pencarian dan pembaruan data buku, sehingga pemahaman terhadap pengelolaan data secara dinamis menjadi lebih mendalam.
+
+## Referensi
+[1] I. Holm, Narrator, and J. Fullerton-Smith, Producer, How to Build a Human [DVD]. London: BBC; 2002.
+
+Keluaran:
+tangkapan layar
+
+Tangkapan Layar Kode Lengkap:
+tangkapan layar
+
+
+
+
 
