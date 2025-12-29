@@ -1,1 +1,474 @@
 
+# <h1 align="center">Laporan Praktikum Modul 8 Queue </h1>
+<p align="center">Rizky Al Kahfi</p>
+
+## Dasar Teori
+#### Queue
+
+Queue merupakan struktur data yang dapat diartikan seperti sebuah antrean.
+Misalkan antrean pada loket pembelian tiket Kereta Api. Orang yang akan mendapatkan pelayanan
+yang pertama adalah orang pertamakali masuk dalam antrean tersebut dan yang terakhir masuk dia
+akan mendapatkan layanan yang terakhir pula. Jadi prinsip dasar dalam Queue adalah FIFO (First in
+Fisrt out), proses yang pertama masuk akan diakses terlebih dahulu. Dalam pengimplementasian
+struktur Queue dalam C dapat menggunakan tipe data array dan linked list.
+
+#### 1. Operasi Dasar pada Queue
+- Enqueue → menambahkan elemen ke dalam antrean (di bagian belakang / tail)
+- Dequeue → menghapus elemen dari antrean (di bagian depan / head)
+- Front / Peek → melihat elemen paling depan tanpa menghapusnya
+- IsEmpty → mengecek apakah queue kosong
+- IsFull (hanya pada implementasi berbasis array)
+
+## Guided 
+
+### 1. [Queu.h]
+
+```C++
+#ifndef QUEUE_H
+#define QUEUE_H
+
+#include <iostream>
+using namespace std;
+
+const int MAX = 5;
+
+struct Paket {
+    string KodeResi;
+    string NamaPengirim;
+    int BeratBarang; 
+    string Tujuan;
+};
+
+struct QueueEkspedisi {
+    Paket dataPaket[MAX];
+    int Head;
+    int Tail;
+};
+
+bool isEmpty(QueueEkspedisi Q);
+bool isFull(QueueEkspedisi Q);
+void createQueue(QueueEkspedisi &Q);
+void enQueue(QueueEkspedisi &Q);
+void deQueue(QueueEkspedisi &Q);
+void viewQueue(QueueEkspedisi Q);
+
+int TotalBiayaPengiriman(QueueEkspedisi Q);
+
+#endif
+```
+Program ini digunakan untuk mengelola antrean paket ekspedisi menggunakan struktur queue. Di dalamnya terdapat fitur untuk menambah paket, menghapus paket, menampilkan antrean, serta menghitung total biaya pengiriman.
+
+### 2. [Queu.cpp]
+
+```C++
+#include "queu.h"
+
+bool isEmpty(QueueEkspedisi Q) {
+    return (Q.Head == -1 && Q.Tail == -1);
+}
+
+bool isFull(QueueEkspedisi Q) {
+    return (Q.Tail == MAX - 1);
+}
+
+void createQueue(QueueEkspedisi &Q) {
+    Q.Head = -1;
+    Q.Tail = -1;
+}
+
+void enQueue(QueueEkspedisi &Q) {
+    if (isFull(Q)) {
+        cout << "Queue penuh!\n";
+        return;
+    }
+
+    Paket P;
+    cout << "Masukkan Kode Resi     : "; cin >> P.KodeResi;
+    cout << "Masukkan Nama Pengirim : "; cin >> P.NamaPengirim;
+    cout << "Masukkan Berat Barang  : "; cin >> P.BeratBarang;
+    cout << "Masukkan Tujuan        : "; cin >> P.Tujuan;
+
+    if (isEmpty(Q)) {
+        Q.Head = Q.Tail = 0;
+    } else {
+        Q.Tail++;
+    }
+
+    Q.dataPaket[Q.Tail] = P;
+}
+
+void deQueue(QueueEkspedisi &Q) {
+    if (isEmpty(Q)) {
+        cout << "Queue kosong!\n";
+        return;
+    }
+
+    cout << "Menghapus paket dengan resi: " << Q.dataPaket[Q.Head].KodeResi << "\n";
+
+    for (int i = Q.Head; i < Q.Tail; i++) {
+        Q.dataPaket[i] = Q.dataPaket[i + 1];
+    }
+
+    Q.Tail--;
+
+    if (Q.Tail < 0) {
+        Q.Head = Q.Tail = -1;
+    }
+}
+
+void viewQueue(QueueEkspedisi Q) {
+    if (isEmpty(Q)) {
+        cout << "Queue kosong!\n";
+        return;
+    }
+
+    cout << "\n--- Daftar Paket dalam Antrian ---\n";
+    for (int i = Q.Head; i <= Q.Tail; i++) {
+        cout << "Posisi " << i + 1 << ":\n";
+        cout << "  Kode Resi     : " << Q.dataPaket[i].KodeResi << endl;
+        cout << "  Pengirim      : " << Q.dataPaket[i].NamaPengirim << endl;
+        cout << "  Berat Barang  : " << Q.dataPaket[i].BeratBarang << " kg" << endl;
+        cout << "  Tujuan        : " << Q.dataPaket[i].Tujuan << endl;
+        cout << "-----------------------------------\n";
+    }
+}
+
+int TotalBiayaPengiriman(QueueEkspedisi Q) {
+    if (isEmpty(Q)) return 0;
+
+    int total = 0;
+    for (int i = Q.Head; i <= Q.Tail; i++) {
+        total += Q.dataPaket[i].BeratBarang * 8250;
+    }
+    return total;
+}
+```
+Program ini berfungsi untuk mengelola antrean paket ekspedisi menggunakan struktur queue berbasis array. Didalamnya ada proses menambah paket (enqueue), menghapus paket (dequeue), menampilkan antrean, dan menghitung total biaya pengiriman berdasarkan berat barang. Program ini mensimulasikan sistem antrean pada layanan pengiriman paket.
+
+### 3. [main.cpp]
+
+```C++
+#include <iostream>
+#include "queu.h"
+
+using namespace std;
+
+int main() {
+    QueueEkspedisi Q;
+    createQueue(Q);
+
+    int pilihan;
+
+    do {
+        cout << "\n--- Gojira Express ---\n";
+        cout << "1. Input Data Paket\n";
+        cout << "2. Hapus Data Paket\n";
+        cout << "3. Tampilkan Queue Paket\n";
+        cout << "4. Hitung Total Biaya Pengiriman\n";
+        cout << "5. Exit\n";
+        cout << "Pilihan anda : ";
+        cin >> pilihan;
+
+        switch (pilihan) {
+        case 1:
+            enQueue(Q);
+            break;
+
+        case 2:
+            deQueue(Q);
+            break;
+
+        case 3:
+            viewQueue(Q);
+            break;
+
+        case 4:
+            cout << "Total Biaya Pengiriman: Rp. " 
+                 << TotalBiayaPengiriman(Q) << endl;
+            break;
+
+        case 5:
+            cout << "Keluar...\n";
+            break;
+
+        default:
+            cout << "Pilihan tidak valid!\n";
+        }
+
+    } while (pilihan != 5);
+
+    return 0;
+}
+```
+Program main() ini digunakan sebagai menu interaktif untuk menjalankan sistem antrean ekspedisi Gojira Express.
+
+Melalui menu tersebut, pengguna bisa:
+- Menambah data paket ke dalam antrean (enqueue)
+- Menghapus paket terdepan (dequeue)
+- Melihat seluruh paket dalam antrean
+- Menghitung total biaya pengiriman
+- Keluar dari program
+program ini mensimulasikan sistem antrean layanan pengiriman paket menggunakan queue.
+
+## Unguided 
+### 1. [Qantri.h]
+
+```C++
+#ifndef QANTRI_H
+#define QANTRI_H
+
+#include <iostream>
+using namespace std;
+
+#define MAX 5
+#define NIL -1
+
+typedef int infotype;
+struct Queue {
+    infotype info[MAX];
+    int head;
+    int tail;
+};
+
+void createQueue(Queue &Q);
+bool isEmptyQueue(Queue Q);
+bool isFullQueue(Queue Q);
+void enqueue(Queue &Q, infotype x);
+infotype dequeue(Queue &Q);
+void printInfo(Queue Q);
+
+#endif
+```
+### 2. [Qantri.cpp]
+```C++
+#include "Qantri.h"
+
+void createQueue(Queue &Q) {
+    Q.head = NIL;
+    Q.tail = NIL;
+}
+
+bool isEmptyQueue(Queue Q) {
+    return Q.head == NIL;
+}
+
+bool isFullQueue(Queue Q) {
+    return Q.tail == MAX - 1;
+}
+
+void enqueue(Queue &Q, infotype x) {
+    if (!isFullQueue(Q)) {
+        if (isEmptyQueue(Q)) {
+            Q.head = 0;
+            Q.tail = 0;
+        } else {
+            Q.tail++;
+        }
+        Q.info[Q.tail] = x;
+    }
+}
+
+infotype dequeue(Queue &Q) {
+    infotype x = Q.info[Q.head];
+
+    if (Q.head == Q.tail) {
+        Q.head = NIL;
+        Q.tail = NIL;
+    } else {
+        Q.head++;
+    }
+    return x;
+}
+
+void printInfo(Queue Q) {
+    cout << Q.head << " - " << Q.tail << "   | ";
+
+    if (isEmptyQueue(Q)) {
+        cout << "empty queue";
+    } else {
+        for (int i = Q.head; i <= Q.tail; i++) {
+            cout << Q.info[i] << "";
+        }
+    }
+   cout << endl;
+}
+```
+### 4. [Qantri2.cpp]
+
+```C++
+#include "Qantri.h"
+
+void createQueue(Queue &Q) {
+    Q.head = -1;
+    Q.tail = -1;
+}
+
+bool isEmptyQueue(Queue Q) {
+    return (Q.head == -1 && Q.tail == -1);
+}
+
+bool isFullQueue(Queue Q) {
+    return (Q.tail == 4);
+}
+
+void enqueue(Queue &Q, infotype x) {
+    if (!isFullQueue(Q)) {
+        if (isEmptyQueue(Q)) {
+            Q.head = 0;
+            Q.tail = 0;
+        } else {
+            Q.tail++;
+        }
+        Q.info[Q.tail] = x;
+    }
+}
+
+infotype dequeue(Queue &Q) {
+    infotype x = -1;
+    if (!isEmptyQueue(Q)) {
+        x = Q.info[Q.head];
+        Q.head++;
+        if (Q.head > Q.tail) {
+            Q.head = -1;
+            Q.tail = -1;
+        }
+    }
+    return x;
+}
+
+void printInfo(Queue Q) {
+    cout << Q.head << " - " << Q.tail << " | ";
+    if (isEmptyQueue(Q)) {
+        cout << "empty queue";
+    } else {
+        for (int i = Q.head; i <= Q.tail; i++) {
+            cout << Q.info[i] << " ";
+        }
+    }
+    cout << endl;
+}
+```
+### 5. [Qantri3.cpp]
+
+```C++
+#include "Qantri.h"
+
+void createQueue(Queue &Q) {
+    Q.head = -1;
+    Q.tail = -1;
+}
+
+bool isEmptyQueue(Queue Q) {
+    return (Q.head == -1);
+}
+
+bool isFullQueue(Queue Q) {
+    return ((Q.tail + 1) % 5 == Q.head);
+}
+
+void enqueue(Queue &Q, infotype x) {
+    if (!isFullQueue(Q)) {
+        if (isEmptyQueue(Q)) {
+            Q.head = 0;
+            Q.tail = 0;
+        } else {
+            Q.tail = (Q.tail + 1) % 5;
+        }
+        Q.info[Q.tail] = x;
+    }
+}
+
+infotype dequeue(Queue &Q) {
+    infotype x = -1;
+    if (!isEmptyQueue(Q)) {
+        x = Q.info[Q.head];
+        if (Q.head == Q.tail) {
+            Q.head = -1;
+            Q.tail = -1;
+        } else {
+            Q.head = (Q.head + 1) % 5;
+        }
+    }
+    return x;
+}
+
+void printInfo(Queue Q) {
+    cout << Q.head << " - " << Q.tail << " | ";
+    if (isEmptyQueue(Q)) {
+        cout << "empty queue";
+    } else {
+        int i = Q.head;
+        while (true) {
+            cout << Q.info[i] << " ";
+            if (i == Q.tail) break;
+            i = (i + 1) % 5;
+        }
+    }
+    cout << endl;
+}
+```
+### 3. [main.cpp]
+
+```C++
+#include "Qantri.h"
+
+int main() {
+    cout << "Hello world!" << endl;
+
+    Queue Q;
+    createQueue(Q);
+
+    cout << "------------------------" << endl;
+    cout << "H - T \t| Queue Info" << endl;
+    cout << "------------------------" << endl;
+
+    printInfo(Q);
+
+    enqueue(Q, 5);  printInfo(Q);
+    enqueue(Q, 2);  printInfo(Q);
+    enqueue(Q, 7);  printInfo(Q);
+    dequeue(Q);     printInfo(Q);
+    enqueue(Q, 4);  printInfo(Q);
+    dequeue(Q);     printInfo(Q);
+    dequeue(Q);     printInfo(Q);
+    return 0;
+}
+```
+#### Output:
+#### Soal 1:
+<img width="650" height="328" alt="image" src="https://github.com/user-attachments/assets/7d650ec1-ab56-4024-a3b8-670e4635e40b" />
+
+
+#### Soal 2:
+<img width="493" height="283" alt="image" src="https://github.com/user-attachments/assets/89b3d7a8-6e79-4aed-a5c8-252a37ee8842" />
+
+#### Soal 3:
+<img width="490" height="282" alt="image" src="https://github.com/user-attachments/assets/d4803f92-086e-4fb6-bbf0-de8891008a55" />
+
+
+Program ini dibuat untuk mengimplementasikan konsep ADT Queue (antrian) menggunakan array dalam bahasa C++. Program mensimulasikan proses antrian dengan operasi utama enqueue (menambah data) dan dequeue (menghapus data) sesuai prinsip FIFO (First In First Out).
+Pada latihan ini, queue diimplementasikan dalam beberapa mekanisme, yaitu queue dengan head dan tail bergerak serta circular queue, untuk menunjukkan perbedaan cara pengelolaan indeks dalam struktur data queue.
+
+#### Full code Screenshot:
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8a5ab980-30b2-4166-8978-ac0642c7128d" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d644121c-9487-40bd-a04c-b122d11ae247" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/8bace71b-aa3a-4ae2-a70b-a194769847b8" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/72ebba0b-8403-4920-b035-9471ab6e0ce8" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/13ce4f42-9861-41d2-86d5-f319c966f993" />
+
+## Kesimpulan
+Ringkasan dan interpretasi pandangan kalia dari hasil praktikum dan pembelajaran yang didapat[1]. Pada modul ini dapat disimpulkan bahwa struktur data queue sangat cocok digunakan untuk menangani proses antrian yang bersifat berurutan. Implementasi circular queue memberikan solusi yang lebih optimal dibandingkan queue linear karena dapat mengurangi pemborosan ruang memori. Dengan memahami perbedaan mekanisme head dan tail, programmer dapat memilih jenis queue yang paling sesuai dengan kebutuhan sistem yang dibangun.
+
+## Referensi
+[1] I. Holm, Narrator, and J. Fullerton-Smith, Producer, How to Build a Human [DVD]. London: BBC; 2002.
+
+Keluaran:
+tangkapan layar
+
+Tangkapan Layar Kode Lengkap:
+tangkapan layar
+
