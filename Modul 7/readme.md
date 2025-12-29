@@ -400,26 +400,28 @@ int main() {
 
 #### Output:
 #### Soal nomor 1:
-<img width="192" height="96" alt="image" src="https://github.com/user-attachments/assets/c9c10b84-b3ed-4ed5-b779-bfc4744c4548" />
+<img width="644" height="165" alt="image" src="https://github.com/user-attachments/assets/c8398bc1-5339-420d-a8d4-fde328600930" />
 
 #### Soal nomor 2:
-<img width="182" height="85" alt="image" src="https://github.com/user-attachments/assets/ff3a039c-2365-40ea-81ea-24f3e1bb0564" />
+<img width="654" height="140" alt="image" src="https://github.com/user-attachments/assets/be66ffbe-5e74-40c7-a423-52c5b02801ae" />
+
 
 #### Soal nomor 3:
-<img width="224" height="107" alt="image" src="https://github.com/user-attachments/assets/0927e53a-7f9c-45ee-9e17-9f3eb6ec281e" />
+<img width="650" height="155" alt="image" src="https://github.com/user-attachments/assets/eb0ae90b-85e3-4c8b-9de1-3321c63318ae" />
+
 
 Program ini dibuat untuk mengimplementasikan struktur data stack menggunakan pendekatan pointer seperti pada linked list. Stack bekerja dengan prinsip LIFO (Last In First Out), sehingga data terakhir yang dimasukkan akan menjadi data pertama yang diambil.
 
 #### Full code Screenshot:
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/54319d21-e979-47fb-92ff-7238b37a9a71" />
+<img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/bfbdc47e-d431-4090-9c46-8bf411d5f93e" />
 
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/38945648-451e-4f37-a385-19a0ac38f3e2" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/c062a65a-174f-49b7-8284-0f1c22ef956b" />
 
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/277b0c69-733d-4325-a5ce-d8581df2d613" />
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/bb9c7bc0-a6a6-4952-8056-f6ea11664755" />
 
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/6ac5be95-6921-4db0-a54a-3356ee467bd2" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/9379216f-7543-4226-8126-9f623c112b7f" />
 
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/204a41f1-9656-4e16-92fc-7abc766d8aec" />
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/315af795-26f7-41d1-ab1e-e42deb7774eb" />
 
 
 ## Kesimpulan
