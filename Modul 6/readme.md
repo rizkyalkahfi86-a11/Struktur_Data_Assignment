@@ -580,6 +580,55 @@ int main() {
 
     return 0;
 }
+```
 
 #### Output
-<img width="1919" height="1076" alt="image" src="https://github.com/user-attachments/assets/627cd845-1bd7-4641-b43b-2508ea41ae41" />
+<img width="391" height="900" alt="image" src="https://github.com/user-attachments/assets/13603b7a-059b-43bf-96f4-e752c1c850bc" />
+
+<img width="364" height="299" alt="image" src="https://github.com/user-attachments/assets/e289ec19-b501-4052-a215-ac2c7c3a696b" />
+
+
+Pada program ini digunakan struktur data double linked list untuk menyimpan data film yang terdiri dari kode film, judul film, dan tahun rilis. Double linked list dipilih karena setiap node atau elemen data saling terhubung dua arah, yaitu melalui pointer next ke data setelahnya dan pointer prev ke data sebelumnya. Dengan demikian, proses penelusuran maupun penghapusan data dapat dilakukan lebih fleksibel.
+
+Pada saat program dijalankan, pengguna memasukkan empat data film secara berurutan, yaitu film dengan kode f001, f002, f003, dan f004. Setiap data yang dimasukkan akan ditambahkan ke bagian akhir (tail) dari double linked list. Akhirnya, terbentuklah urutan data sebagai berikut: f001 → f002 → f003 → f004. Setelah seluruh data berhasil dimasukkan, program menampilkan seluruh isi daftar film. Output yang muncul menunjukkan bahwa data tersimpan sesuai dengan urutan pemasukan.
+
+Selanjutnya, program menyediakan fitur pencarian data berdasarkan kode film. Pada percobaan ini, pengguna mencari film dengan kode f002. Program kemudian menelusuri node dari awal hingga menemukan node yang memiliki kode tersebut. Hasilnya, film dengan kode f002 berhasil ditemukan dan ditampilkan lengkap dengan judul dan tahun rilisnya.
+
+Program juga mendukung proses penghapusan data. Pengguna memasukkan kode film f001 sebagai data yang akan dihapus. Karena f001 berada di posisi awal (head), maka proses penghapusan dilakukan dengan memindahkan pointer head ke node berikutnya, serta menyesuaikan pointer prev node baru agar tidak lagi terhubung dengan node lama. Setelah proses ini, data f001 benar-benar terhapus dari struktur list.
+
+Pada tahap akhir, program kembali menampilkan isi double linked list setelah penghapusan. Hasil output menunjukkan bahwa data yang tersisa adalah f002, f003, dan f004, yang berarti proses penghapusan telah berjalan dengan benar tanpa mengganggu data lain.
+
+Secara keseluruhan, output program ini membuktikan bahwa operasi-operasi dasar pada double linked list, yaitu penambahan data (insert), pencarian data (search), penampilan data (traversal), dan penghapusan data (delete) telah berhasil diimplementasikan dan berjalan sesuai dengan konsep teori.
+
+
+#### Full code screnshot
+<img width="1228" height="1007" alt="image" src="https://github.com/user-attachments/assets/514fbaa5-1c91-47ae-b09a-8a363ff188de" />
+
+<img width="1239" height="1013" alt="image" src="https://github.com/user-attachments/assets/779c3f28-1ad1-48a9-a9a7-793bf3f2c64f" />
+
+<img width="1250" height="1001" alt="image" src="https://github.com/user-attachments/assets/fd05de38-87b6-4292-a644-ab5b9a5a41d2" />
+
+
+
+
+
+## Kesimpulan
+Ringkasan dan interpretasi pandangan kalia dari hasil praktikum dan pembelajaran yang didapat[1]. Pada modul ini dapat disimpulkan kalau Doubly Linked List sangat cocok digunakan untuk mengelola data secara dinamis karena setiap node memiliki pointer ke depan dan ke belakang.
+Hal ini memudahkan proses penelusuran, pencarian, penambahan, maupun penghapusan data tanpa harus memindahkan seluruh elemen.
+Struktur ini memberikan fleksibilitas lebih besar dibanding single linked list, terutama pada operasi delete dan insert di tengah list.
+
+## Referensi
+[1] I. Holm, Narrator, and J. Fullerton-Smith, Producer, How to Build a Human [DVD]. London: BBC; 2002.
+
+Keluaran:
+tangkapan layar
+
+Tangkapan Layar Kode Lengkap:
+tangkapan layar
+
+
+
+
+
+
+
