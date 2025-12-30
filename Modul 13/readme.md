@@ -1,1 +1,964 @@
 
+# <h1 align="center">Laporan Praktikum Modul 13 Multi Linked List </h1>
+<p align="center">Rizky Al Kahfi</p>
+
+## Dasar Teori
+- Multi Linked List
+
+Multi Linked List merupakan sekumpulan linked list yang berbeda namun saling memiliki keterhubungan satu sama lain. Setiap elemen dalam multi linked list dapat membentuk sebuah list tersendiri. Umumnya, struktur ini terdiri dari list induk dan list anak, di mana list induk berfungsi sebagai penghubung ke list anak. Dengan demikian, satu elemen pada list induk dapat memiliki lebih dari satu elemen pada list anak. Struktur data ini digunakan untuk merepresentasikan hubungan data yang bersifat hierarkis atau satu ke banyak, seperti pada data pegawai dan data anak.
+
+## Guided
+
+### 1. [multi.h]
+
+```C++
+#ifndef MLL_H
+#define MLL_H
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+struct DataMakanan {
+    string idMakanan;
+    string namaMakanan;
+    float harga;
+};
+
+struct KategoriMakanan {
+    string idKategori;
+    string namaKategori;
+};
+
+typedef struct nodeParent *NodeParent;
+typedef struct nodeChild *NodeChild;
+
+struct nodeChild {
+    DataMakanan isidata;
+    NodeChild next;
+    NodeChild prev;
+};
+
+struct listAnak {
+    NodeChild first;
+    NodeChild last;
+};
+
+struct nodeParent {
+    KategoriMakanan isidata;
+    NodeParent next;
+    NodeParent prev;
+    listAnak L_Anak;
+};
+
+struct listInduk {
+    NodeParent first;
+    NodeParent last;
+};
+
+//isEmpty & create list
+bool isEmptyInduk(listInduk LInduk);
+bool isEmptyAnak(listAnak LAnak);
+void createListInduk(listInduk &LInduk);
+void createListAnak(listAnak &LAnak);
+
+//alokasi & dealokasi
+NodeParent alokasiNodeParent(string idKategori, string namaKategori);
+NodeChild alokasiNodeChild(string idMakanan, string namaMakanan, float harga);
+void dealokasiNodeChild(NodeChild &nodeAnak);
+void dealokasiNodeParent(NodeParent &nodeInduk);
+
+//operasi pada parent
+void insertFirstParent(listInduk &LInduk, NodeParent nodeBaruParent);
+void insertLastParent(listInduk &LInduk, NodeParent nodeBaruParent);
+void insertAfterParent(listInduk &LInduk, NodeParent nodeBaruParent, NodeParent nodePrevParent);
+void deleteFirstParent(listInduk &LInduk);
+void deleteLastParent(listInduk &LInduk);
+void deleteAfterParent(listInduk &LInduk, NodeParent nodePrev);
+void findParentByID(listInduk &LInduk, string IDCari);
+void updateDataParentByID(listInduk &LInduk, string IDCari, string newNamaKategori);
+
+//operasi pada child
+void insertFirstChild(listAnak &LAnak, NodeChild nodeBaruChild);
+void insertLastChild(listAnak &LAnak, NodeChild nodeBaruChild);
+void insertAfterChild(listAnak &LAnak, NodeChild nodeBaruChild, NodeChild nodePrevChild);
+void deleteFirstChild(listAnak &LAnak);
+void deleteLastChild(listAnak &LAnak);
+void deleteAfterChild(listAnak &LAnak, NodeChild nodePrev);
+void findChildByID(listInduk &LInduk, string IDCari);
+void updateDataChildByID(listInduk &LInduk, string IDCari, string newNamaMakanan, float newHarga);
+
+//operasi print
+void printStrukturMLL(listInduk &LInduk);
+void printListInduk(listInduk &LInduk);
+void printListAnak(listInduk &LInduk, NodeParent nodeInduk);
+
+//operasi hapus list
+void hapusListInduk(listInduk &LInduk);
+void hapusListAnak(listAnak &LAnak);
+
+#endif
+```
+multi.h berisi definisi struktur data Multi Linked List serta deklarasi seluruh fungsi yang digunakan, yang mencakup struktur parent (kategori) dan child (menu makanan).
+
+### 2. [multi.cpp]
+
+```C++
+#include "MultiL.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+//isEmpty & create list
+bool isEmptyInduk(listInduk LInduk){
+    if(LInduk.first == NULL){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool isEmptyAnak(listAnak LAnak){
+    if(LAnak.first == NULL){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void createListInduk(listInduk &LInduk) {
+    LInduk.first = LInduk.last = NULL;
+}
+
+void createListAnak(listAnak &LAnak) {
+    LAnak.first = LAnak.last = NULL;
+}
+
+//alokasi & dealokasi
+NodeParent alokasiNodeParent(string idKategori, string namaKategori) {
+    NodeParent nodeBaruParent = new nodeParent;
+    nodeBaruParent->isidata.idKategori = idKategori;
+    nodeBaruParent->isidata.namaKategori = namaKategori;
+    nodeBaruParent->next = NULL;
+    nodeBaruParent->prev = NULL;
+    createListAnak(nodeBaruParent->L_Anak);
+    return nodeBaruParent;
+}
+
+NodeChild alokasiNodeChild(string idMakanan, string namaMakanan, float harga) {
+    NodeChild nodeBaruChild = new nodeChild;
+    nodeBaruChild->isidata.idMakanan = idMakanan;
+    nodeBaruChild->isidata.namaMakanan = namaMakanan;
+    nodeBaruChild->isidata.harga = harga;
+    nodeBaruChild->next = NULL;
+    nodeBaruChild->prev = NULL;
+    return nodeBaruChild;
+}
+
+void dealokasiNodeChild(NodeChild &nodeAnak) {
+    if(nodeAnak != NULL) {
+        nodeAnak->next = nodeAnak->prev = NULL;
+        delete nodeAnak;
+        nodeAnak = NULL;
+    }
+}
+
+void dealokasiNodeParent(NodeParent &nodeInduk) {
+    if(nodeInduk != NULL) {
+        nodeInduk->next = nodeInduk->prev = NULL;
+        delete nodeInduk;
+        nodeInduk = NULL;
+    }
+}
+
+//operasi pada parent
+void insertFirstParent(listInduk &LInduk, NodeParent nodeBaruParent) {
+    if(isEmptyInduk(LInduk) == true) {
+        LInduk.first = LInduk.last = nodeBaruParent;
+    } else {
+        nodeBaruParent->next = LInduk.first;
+        LInduk.first->prev = nodeBaruParent;
+        LInduk.first = nodeBaruParent;
+    }
+    cout << "Node parent "<< nodeBaruParent->isidata.namaKategori << " berhasil ditambahkan kedalam urutan pertama di list Induk!" << endl;
+}
+
+void insertLastParent(listInduk &LInduk, NodeParent nodeBaruParent) {
+    if(isEmptyInduk(LInduk) == true) {
+        LInduk.first = LInduk.last = nodeBaruParent;
+    } else {
+        nodeBaruParent->prev = LInduk.last;
+        LInduk.last->next = nodeBaruParent;
+        LInduk.last = nodeBaruParent;
+    }
+    cout << "Node parent "<< nodeBaruParent->isidata.namaKategori << " berhasil ditambahkan kedalam urutan terakhir di list Induk!" << endl;
+}
+
+void insertAfterParent(listInduk &LInduk, NodeParent nodeBaruParent, NodeParent nodePrevParent) {
+    if(nodePrevParent == NULL) {
+        cout << "Node Prev Parent tidak valid!" << endl;
+    } else {
+        if(nodePrevParent == LInduk.last){
+            insertLastParent(LInduk, nodeBaruParent);
+            return;
+        } else {
+            nodeBaruParent->next = nodePrevParent->next;
+            nodeBaruParent->prev = nodePrevParent;
+            (nodePrevParent->next)->prev = nodeBaruParent;
+            nodePrevParent->next = nodeBaruParent;
+            cout << "Node parent "<< nodeBaruParent->isidata.namaKategori << " berhasil ditambahkan kedalam list induk setelah node parent "<< nodePrevParent->isidata.namaKategori << endl;
+        }
+    }
+}
+
+void deleteFirstParent(listInduk &LInduk){
+    if(isEmptyInduk(LInduk) == true){
+        cout << "List Induk kosong!" << endl;
+    } else {
+        NodeParent nodeHapus = LInduk.first;
+        if (LInduk.first == LInduk.last) { // KASUS KHUSUS 1 ELEMEN
+            LInduk.first = NULL;
+            LInduk.last = NULL;
+        } else {
+            LInduk.first = LInduk.first->next;
+            LInduk.first->prev = NULL;
+            nodeHapus->next = NULL;
+        }
+        if(nodeHapus->L_Anak.first != NULL){
+            hapusListAnak(nodeHapus->L_Anak);
+        }
+        dealokasiNodeParent(nodeHapus);
+        cout << "Node pertama list induk berhasil dihapus beserta anak-anaknya!" << endl;
+    }
+}
+
+void deleteLastParent(listInduk &LInduk){
+    if(isEmptyInduk(LInduk) == true){
+        cout << "List Induk kosong!" << endl;
+    } else {
+        NodeParent nodeHapus = LInduk.last;
+        if (LInduk.first == LInduk.last) {
+            LInduk.first = NULL;
+            LInduk.last = NULL;
+        } else {
+            LInduk.last = LInduk.last->prev;
+            nodeHapus->prev = NULL;
+            LInduk.last->next = NULL;
+        }
+        if(nodeHapus->L_Anak.first != NULL){
+            hapusListAnak(nodeHapus->L_Anak);
+        }
+        dealokasiNodeParent(nodeHapus);
+        cout << "Node terakhir list induk berhasil dihapus beserta anak-anaknya!" << endl;
+    }
+}
+
+void deleteAfterParent(listInduk &LInduk, NodeParent nodePrev){
+    if(isEmptyInduk(LInduk) == true){
+        cout << "List induk kosong!" << endl;
+    } else {
+        if(nodePrev != NULL && nodePrev->next != NULL){
+            NodeParent nodeHapus = nodePrev->next;
+            nodePrev->next = nodeHapus->next;
+            if (nodeHapus->next != NULL){
+                (nodeHapus->next)->prev = nodePrev;
+            } else {
+                LInduk.last = nodePrev;
+            }
+            nodeHapus->next = NULL;
+            if(nodeHapus->L_Anak.first != NULL){
+                hapusListAnak(nodeHapus->L_Anak);
+            }
+            dealokasiNodeParent(nodeHapus);
+            cout << "Node parent setelah node " << nodePrev->isidata.namaKategori << " berhasil dihapus beserta anak-anaknya!" << endl;
+        } else {
+            cout << "Node prev tidak valid!" << endl;
+        }
+    }
+}
+
+void findParentByID(listInduk &LInduk, string IDCari){
+    if(isEmptyInduk(LInduk) == true){
+        cout << "List induk kosong!" << endl;
+    } else {
+        NodeParent nodeBantu = LInduk.first;
+        int index = 1;
+        int ketemu = false;
+        while(nodeBantu != NULL){
+            if(nodeBantu->isidata.idKategori == IDCari){
+                cout << "Data ID parent ditemukan pada list induk posisi ke-" << index << "!" << endl;
+                cout << "ID : " << nodeBantu->isidata.idKategori << endl;
+                cout << "Posisi dalam list induk : posisi ke-" << index << endl;
+                cout << "Nama Kategori : " << nodeBantu->isidata.namaKategori << endl;
+                ketemu = true;
+                break;
+            } else {
+                nodeBantu = nodeBantu->next;
+                index++;
+            }
+        }
+        if(!ketemu){
+            cout << "Data ID parent tidak ditemukan didalam list induk!" << endl;
+        }
+    }
+}
+
+void updateDataParentByID(listInduk &LInduk, string IDCari, string newNamaKategori) {
+    if (isEmptyInduk(LInduk) == true) {
+        cout << "List Induk kosong!" << endl;
+    } else {
+        NodeParent nodeBantu = LInduk.first;
+        bool ketemu = false;
+        while (nodeBantu != NULL) {
+            if (nodeBantu->isidata.idKategori == IDCari) {
+                // Proses Update
+                nodeBantu->isidata.namaKategori = newNamaKategori;
+                cout << "Update Parent Berhasil!" << endl;
+                cout << "Node parent dengan ID " << IDCari << " berhasil diupdate menjadi : " << endl;
+                cout << "Nama Kategori baru  : " << newNamaKategori << endl;
+                ketemu = true;
+                break; 
+            } else {
+                nodeBantu = nodeBantu->next;
+            }
+        }
+        if (!ketemu) {
+            cout << "Parent dengan ID " << IDCari << " tidak ditemukan" << endl;
+        }
+    }
+}
+
+//operasi pada child
+void insertFirstChild(listAnak &LAnak, NodeChild nodeBaruChild) {
+    if(isEmptyAnak(LAnak)) {
+        LAnak.first = LAnak.last = nodeBaruChild;
+    } else {
+        nodeBaruChild->next = LAnak.first;
+        LAnak.first->prev = nodeBaruChild;
+        LAnak.first = nodeBaruChild;
+    }
+    cout << "Node child "<< nodeBaruChild->isidata.namaMakanan << " berhasil ditambahkan kedalam urutan pertama di list Anak!" << endl;
+}
+
+void insertLastChild(listAnak &LAnak, NodeChild nodeBaruChild) {
+    if(isEmptyAnak(LAnak)) {
+        LAnak.first = LAnak.last = nodeBaruChild;
+    } else {
+        nodeBaruChild->prev = LAnak.last;
+        LAnak.last->next = nodeBaruChild;
+        LAnak.last = nodeBaruChild;
+    }
+    cout << "Node child "<< nodeBaruChild->isidata.namaMakanan << " berhasil ditambahkan kedalam urutan terakhir di list Anak!" << endl;
+}
+
+void insertAfterChild(listAnak &LAnak, NodeChild nodeBaruChild, NodeChild nodePrevChild) {
+    if(nodePrevChild == NULL) {
+        cout << "Node Prev Parent tidak valid!" << endl;
+    } else {
+        if(nodePrevChild == LAnak.last){
+            insertLastChild(LAnak, nodeBaruChild);
+            return;
+        } else {
+            nodeBaruChild->next = nodePrevChild->next;
+            nodeBaruChild->prev = nodePrevChild;
+            (nodePrevChild->next)->prev = nodeBaruChild;
+            nodePrevChild->next = nodeBaruChild;
+            cout << "Node child "<< nodeBaruChild->isidata.namaMakanan << " berhasil ditambahkan kedalam list anak setelah node child "<< nodePrevChild->isidata.namaMakanan << endl;
+        }
+    }
+}
+
+void deleteFirstChild(listAnak &LAnak){
+    if(isEmptyAnak(LAnak) == true){
+        cout << "List anak kosong!" << endl;
+    } else {
+        NodeChild nodeHapus = LAnak.first;
+        if (LAnak.first == LAnak.last) { // KASUS KHUSUS 1 ELEMEN
+            LAnak.first = NULL;
+            LAnak.last = NULL;
+        } else {
+            LAnak.first = LAnak.first->next;
+            LAnak.first->prev = NULL;
+            nodeHapus->next = NULL;
+        }
+        dealokasiNodeChild(nodeHapus);
+        cout << "Node pertama list anak berhasil dihapus!" << endl;
+    }
+}
+
+void deleteLastChild(listAnak &LAnak){
+    if(isEmptyAnak(LAnak) == true){
+        cout << "List anak kosong!" << endl;
+    } else {
+        NodeChild nodeHapus = LAnak.last;
+        if (LAnak.first == LAnak.last) {
+            LAnak.first = NULL;
+            LAnak.last = NULL;
+        } else {
+            LAnak.last = LAnak.last->prev;
+            nodeHapus->prev = NULL;
+            LAnak.last->next = NULL;
+        }
+        dealokasiNodeChild(nodeHapus);
+        cout << "Node terakhir list anak berhasil dihapus!" << endl;
+    }
+}
+
+void deleteAfterChild(listAnak &LAnak, NodeChild nodePrev){
+    if(isEmptyAnak(LAnak) == true){
+        cout << "List induk kosong!" << endl;
+    } else {
+        if(nodePrev != NULL && nodePrev->next != NULL){
+            NodeChild nodeHapus = nodePrev->next;
+            nodePrev->next = nodeHapus->next;
+            if (nodeHapus->next != NULL){
+                (nodeHapus->next)->prev = nodePrev;
+            } else {
+                LAnak.last = nodePrev;
+            }
+            nodeHapus->next = NULL;
+            dealokasiNodeChild(nodeHapus);
+            cout << "Node child setelah node " << nodePrev->isidata.namaMakanan << " berhasil dihapus!" << endl;
+        } else {
+            cout << "Node prev tidak valid!" << endl;
+        }
+    }
+}
+
+void findChildByID(listInduk &LInduk, string IDCari){
+    if(isEmptyInduk(LInduk) == true){
+        cout << "List induk kosong!" << endl;
+    } else {
+        NodeParent nodeBantuParent = LInduk.first;
+        int indexParent = 1;
+        int ketemu = false;
+        while(nodeBantuParent != NULL){
+            NodeChild nodeBantuChild = nodeBantuParent->L_Anak.first;
+            int indexChild = 1;
+            while(nodeBantuChild != NULL){
+                if(nodeBantuChild->isidata.idMakanan == IDCari) {
+                    cout << "Data ID child ditemukan pada list anak dari node parent " << nodeBantuParent->isidata.namaKategori << " pada posisi ke-" << indexChild << "!" << endl;
+                    cout << "--- Data Child ---" << endl;
+                    cout << "ID Child : " << nodeBantuChild->isidata.idMakanan << endl;
+                    cout << "Posisi dalam list anak : posisi ke-" << indexChild << endl;
+                    cout << "Nama Makanan : " << nodeBantuChild->isidata.namaMakanan << endl;
+                    cout << "Harga : " << nodeBantuChild->isidata.harga << endl;
+                    cout << "---------------------------" << endl;
+                    cout << "--- Data Parent ---" << endl;
+                    cout << "ID Parent : " << nodeBantuParent->isidata.idKategori << endl;
+                    cout << "Posisi dalam list induk : posisi ke-" << indexParent << endl;
+                    cout << "Nama kategori : " << nodeBantuParent->isidata.namaKategori << endl;
+                    ketemu = true;
+                    break;
+                } else {
+                    nodeBantuChild = nodeBantuChild->next;
+                    indexChild++;
+                }
+            }
+            if(ketemu){
+                break;
+            } else {
+                nodeBantuParent = nodeBantuParent->next;
+                indexParent++;
+            }
+        }
+        if(!ketemu){
+            cout << "Data ID child tidak ditemukan didalam list anak!" << endl;
+        }
+    }
+}
+
+void updateDataChildByID(listInduk &LInduk, string IDCari, string newNamaMakanan, float newHarga) {
+    if (isEmptyInduk(LInduk) == true) {
+        cout << "List Induk kosong!" << endl;
+    } else {
+        NodeParent nodeBantuParent = LInduk.first;
+        bool ketemu = false;
+        // Loop Parent (karena child ada di dalam parent)
+        while (nodeBantuParent != NULL) {
+            NodeChild nodeBantuChild = nodeBantuParent->L_Anak.first;
+            // Loop Child
+            while (nodeBantuChild != NULL) {
+                if (nodeBantuChild->isidata.idMakanan == IDCari) {
+                    // Proses Update
+                    nodeBantuChild->isidata.namaMakanan = newNamaMakanan;
+                    nodeBantuChild->isidata.harga = newHarga;
+                    cout << "Update Child Berhasil!" << endl;
+                    cout << "Lokasi : Ada di dalam Parent " << nodeBantuParent->isidata.namaKategori << endl;
+                    cout << "Node child dengan ID " << IDCari << " berhasil diupdate menjadi : " << endl;
+                    cout << "Nama Makanan Baru  : " << newNamaMakanan << endl;
+                    cout << "Harga Baru : " << newHarga << endl;
+                    ketemu = true;
+                    break; // Break loop child
+                } else {
+                    nodeBantuChild = nodeBantuChild->next;
+                }
+            }
+            if (ketemu){
+                break; // Break loop parent jika sudah ketemu di dalam
+            } else {
+                nodeBantuParent = nodeBantuParent->next;
+            }
+        }
+        if (!ketemu) {
+            cout << "Child dengan ID " << IDCari << " tidak ditemukan di parent manapun." << endl;
+        }
+    }
+}
+
+//operasi print
+void printStrukturMLL(listInduk &LInduk) {
+    if(isEmptyInduk(LInduk)) {
+        cout << "List induk kosong!" << endl;
+    } else {
+        NodeParent nodeBantuParent = LInduk.first;
+        int indexParent = 1;
+        while(nodeBantuParent != NULL) {
+            cout << "=== Parent " << indexParent << " ===" << endl;
+            cout << "ID Kategori : " << nodeBantuParent->isidata.idKategori << endl;
+            cout << "Nama Kategori : " << nodeBantuParent->isidata.namaKategori << endl;
+
+            //print list anak dari node parentnya
+            NodeChild nodeBantuChild = nodeBantuParent->L_Anak.first;
+            if(nodeBantuChild == NULL) {
+                cout << "  (tidak ada child)" << endl;
+            } else {
+                int indexChild = 1;
+                while(nodeBantuChild != NULL) {
+                    cout << "  - Child " << indexChild << " :" << endl;
+                    cout << "      ID Makanan : " << nodeBantuChild->isidata.idMakanan << endl;
+                    cout << "      Nama Makanan : " << nodeBantuChild->isidata.namaMakanan << endl;
+                    cout << "      Harga : " << nodeBantuChild->isidata.harga << endl;
+                    nodeBantuChild = nodeBantuChild->next;
+                    indexChild++;
+                }
+            }
+            cout << "---------------------------" << endl;
+            nodeBantuParent = nodeBantuParent->next;
+            indexParent++;
+        }
+    }
+}
+
+void printListInduk(listInduk &LInduk) {
+    if(isEmptyInduk(LInduk)) {
+        cout << "List induk Kosong!" << endl;
+    } else {
+        NodeParent nodeBantuParent = LInduk.first;
+        int index = 1;
+        while(nodeBantuParent != NULL) {
+            cout << "=== Parent " << index << " ===" << endl;
+            cout << "ID Kategori : " << nodeBantuParent->isidata.idKategori << endl;
+            cout << "Nama Kategori : " << nodeBantuParent->isidata.namaKategori << endl;
+            cout << "---------------------------" << endl;
+            nodeBantuParent = nodeBantuParent->next;
+            index++;
+        }
+    }
+}
+
+void printListAnak(listInduk &LInduk, NodeParent nodeInduk) {
+    if(isEmptyInduk(LInduk) == true || nodeInduk == NULL){
+        cout << "List induk kosong atau node induk tidak valid!" << endl;
+    } else {
+        NodeChild nodeBantuChild = nodeInduk->L_Anak.first;
+        if(nodeBantuChild == NULL) {
+            cout << "node parent " << nodeInduk->isidata.namaKategori << " tidak memiliki list anak!" << endl;
+        } else {
+            cout << "=== List Anak Node Parent " << nodeInduk->isidata.namaKategori << " ===" << endl;
+            int index = 1;
+            while(nodeBantuChild != NULL) {
+                cout << "Child " << index << " :" << endl;
+                cout << "ID Makanan : " << nodeBantuChild->isidata.idMakanan << endl;
+                cout << "Nama Makanan : " << nodeBantuChild->isidata.namaMakanan << endl;
+                cout << "Harga : " << nodeBantuChild->isidata.harga << endl;
+                cout << "---------------------------" << endl;
+                nodeBantuChild = nodeBantuChild->next;
+                index++;
+            }
+        }
+    }
+}
+
+//operasi hapus list
+void hapusListInduk(listInduk &LInduk) {
+    NodeParent nodeBantu = LInduk.first;
+    while(nodeBantu != NULL) {
+        NodeParent nodeHapus = nodeBantu;
+        nodeBantu = nodeBantu->next;
+        //panggil prosedur hapusListAnak() untuk menghapus child-child nya
+        hapusListAnak(nodeHapus->L_Anak);
+        dealokasiNodeParent(nodeHapus);
+    }
+    LInduk.first = LInduk.last = NULL;
+}
+
+void hapusListAnak(listAnak &LAnak) {
+    NodeChild nodeBantu = LAnak.first;
+    while(nodeBantu != NULL) {
+        NodeChild nodeHapus = nodeBantu;
+        nodeBantu = nodeBantu->next;
+        dealokasiNodeChild(nodeHapus);
+    }
+    LAnak.first = LAnak.last = NULL;
+}
+```
+multi.cpp berisi implementasi seluruh fungsi untuk pengelolaan Multi Linked List, meliputi operasi insert, delete, search, update, serta proses menampilkan data parent dan child.
+
+### 3. [main.cpp]
+
+```C++
+#include "MultiL.h"
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    // 1. Inisialisasi List
+    listInduk L;
+    createListInduk(L);
+    cout << "=== MENU RESTORAN DIBUAT ===" << endl << endl;
+
+    // 2. Membuat Data Parent (Kategori Makanan)
+    // Kita simpan pointer-nya agar mudah memasukkan anak nanti
+    NodeParent Kat1 = alokasiNodeParent("K01", "Makanan Berat");
+    insertFirstParent(L, Kat1);
+
+    NodeParent Kat2 = alokasiNodeParent("K02", "Minuman");
+    insertAfterParent(L, Kat2, Kat1);
+
+    NodeParent Kat3 = alokasiNodeParent("K03", "Dessert");
+    insertLastParent(L, Kat3);
+    
+    cout << endl;
+
+    // 3. Memasukkan Data Child (Menu Makanan) ke Kategori Tertentu
+    
+    // --> Isi Kategori Makanan Berat (K01)
+    NodeChild Mkn1 = alokasiNodeChild("M01", "Nasi Goreng Spesial", 25000);
+    insertFirstChild(Kat1->L_Anak, Mkn1);
+
+    NodeChild Mkn2 = alokasiNodeChild("M02", "Ayam Bakar Madu", 30000);
+    insertLastChild(Kat1->L_Anak, Mkn2);
+
+    // --> Isi Kategori Minuman (K02)
+    NodeChild Min1 = alokasiNodeChild("D01", "Es Teh Manis", 5000);
+    insertLastChild(Kat2->L_Anak, Min1);
+    
+    NodeChild Min2 = alokasiNodeChild("D02", "Jus Alpukat", 15000);
+    insertFirstChild(Kat2->L_Anak, Min2);
+
+    // --> Isi Kategori Dessert (K03)
+    NodeChild Des1 = alokasiNodeChild("S01", "Puding Coklat", 10000);
+    insertLastChild(Kat3->L_Anak, Des1);
+    cout << endl;
+
+    cout << "=== TAMPILAN AWAL MENU ===" << endl;
+    printStrukturMLL(L);
+    cout << endl;
+
+    // 4. Test Pencarian (Find)
+    cout << "=== TEST PENCARIAN ===" << endl;
+    findParentByID(L, "K02"); // Cari Kategori Minuman
+    cout << "---------------------------" << endl;
+    findChildByID(L, "M01");  // Cari Nasi Goreng
+    cout << "---------------------------" << endl;
+    findChildByID(L, "X99");  // Cari data ngawur (harus not found)
+    cout << "---------------------------" << endl;
+    cout << endl;
+
+    // 5. Test Update Data
+    cout << "=== TEST UPDATE ===" << endl;
+    // Update Nama Kategori (Parent)
+    // Mengubah "Dessert" menjadi "Makanan Penutup"
+    updateDataParentByID(L, "K03", "Makanan Penutup");
+    cout << "---------------------------" << endl;
+    
+    // Update Data Makanan (Child)
+    // Mengubah "Nasi Goreng Spesial" jadi "Nasgor Gila", harga naik jadi 28000
+    updateDataChildByID(L, "M01", "Nasgor Gila", 28000);
+    cout << "---------------------------" << endl;
+    
+    cout << "\n=== SETELAH UPDATE ===" << endl;
+    // Kita cek apakah data berubah
+    printListInduk(L); // Cek nama kategori saja
+    cout << endl;
+    printListAnak(L, Kat1); // Cek list anak di kategori 1
+    cout << endl;
+
+    // 6. Test Penghapusan (Delete)
+    cout << "=== TEST DELETE ===" << endl;
+    
+    // Hapus Child: Hapus Jus Alpukat (D02) dari Minuman
+    cout << "> Menghapus Child D02..." << endl;
+    deleteFirstChild(Kat2->L_Anak); 
+    
+    // Hapus Parent: Hapus Kategori Dessert/Makanan Penutup (K03)
+    // DeleteLastParent akan menghapus elemen terakhir (K03)
+    cout << "> Menghapus Parent Terakhir (K03)..." << endl;
+    deleteLastParent(L); 
+
+    cout << "\n=== TAMPILAN AKHIR MENU ===" << endl;
+    printStrukturMLL(L);
+
+    return 0;
+}
+```
+main.cpp merupakan program utama yang digunakan untuk menguji seluruh fungsi dengan studi kasus menu restoran, mulai dari proses penambahan data, pencarian, pembaruan, hingga penghapusan data.
+
+## Unguided 
+### 1. [multi.h]
+
+```C++
+#ifndef MULTI_H
+#define MULTI_H
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct infotype {
+    string nama;
+    string nim;
+    char jk;
+    float ipk;
+};
+
+typedef struct ElmList *address;
+
+struct ElmList {
+    infotype info;
+    address next;
+};
+
+struct List {
+    address first;
+};
+
+void createList(List &L);
+address alokasi(infotype data);
+void dealokasi(address &P);
+
+void insertFirst(List &L, address P);
+void insertLast(List &L, address P);
+void insertAfter(List &L, address Prec, address P);
+
+void deleteFirst(List &L, address &P);
+void deleteLast(List &L, address &P);
+
+address findElm(List L, infotype x);
+void printInfo(List L);
+
+#endif
+```
+### 2. [multi.cpp]
+```C++
+#include "multi.h"
+
+void createList(List &L) {
+    L.first = NULL;
+}
+
+address alokasi(infotype data) {
+    address P = new ElmList;
+    P->info = data;
+    P->next = NULL;
+    return P;
+}
+
+void dealokasi(address &P) {
+    delete P;
+    P = NULL;
+}
+
+void insertFirst(List &L, address P) {
+    if (L.first == NULL) {
+        L.first = P;
+        P->next = P;
+    } else {
+        address last = L.first;
+        while (last->next != L.first) {
+            last = last->next;
+        }
+        P->next = L.first;
+        last->next = P;
+        L.first = P;
+    }
+}
+
+void insertLast(List &L, address P) {
+    if (L.first == NULL) {
+        L.first = P;
+        P->next = P;
+    } else {
+        address last = L.first;
+        while (last->next != L.first) {
+            last = last->next;
+        }
+        last->next = P;
+        P->next = L.first;
+    }
+}
+
+void insertAfter(List &L, address Prec, address P) {
+    if (Prec != NULL) {
+        P->next = Prec->next;
+        Prec->next = P;
+    }
+}
+
+void deleteFirst(List &L, address &P) {
+    if (L.first != NULL) {
+        address firstNode = L.first;
+        if (firstNode->next == firstNode) {
+            P = firstNode;
+            L.first = NULL;
+        } else {
+            address last = L.first;
+            while (last->next != L.first) {
+                last = last->next;
+            }
+            P = L.first;
+            L.first = P->next;
+            last->next = L.first;
+        }
+        P->next = NULL;
+    }
+}
+
+void deleteLast(List &L, address &P) {
+    if (L.first != NULL) {
+        address curr = L.first;
+        address prev = NULL;
+        if (curr->next == curr) {
+            P = curr;
+            L.first = NULL;
+        } else {
+            while (curr->next != L.first) {
+                prev = curr;
+                curr = curr->next;
+            }
+            P = curr;
+            prev->next = L.first;
+        }
+        P->next = NULL;
+    }
+}
+
+address findElm(List L, infotype x) {
+    if (L.first == NULL) return NULL;
+
+    address P = L.first;
+    do {
+        if (P->info.nim == x.nim) {
+            return P;
+        }
+        P = P->next;
+    } while (P != L.first);
+
+    return NULL;
+}
+
+void printInfo(List L) {
+    if (L.first != NULL) {
+        address P = L.first;
+        do {
+            cout << "Nama : " << P->info.nama << endl;
+            cout << "NIM  : " << P->info.nim << endl;
+            cout << "L/P  : " << P->info.jk << endl;
+            cout << "IPK  : " << P->info.ipk << endl;
+            cout << endl;
+            P = P->next;
+        } while (P != L.first);
+    }
+}
+```
+### 3. [main.cpp]
+
+```C++
+#include <iostream>
+#include "multi.h"
+using namespace std;
+
+int main() {
+    List L, A, B, L2;
+    address P1 = NULL;
+    address P2 = NULL;
+    infotype x;
+
+    createList(L);
+
+    cout << "coba insert first, last, dan after" << endl << endl;
+
+    x = {"Danu", "04", 'L', 4.0};
+    P1 = alokasi(x);
+    insertFirst(L, P1);
+
+    x = {"Fahmi", "06", 'L', 3.45};
+    P1 = alokasi(x);
+    insertLast(L, P1);
+
+    x = {"Bobi", "02", 'L', 3.71};
+    P1 = alokasi(x);
+    insertFirst(L, P1);
+
+    x = {"Ali", "01", 'L', 3.3};
+    P1 = alokasi(x);
+    insertFirst(L, P1);
+
+    x = {"Gita", "07", 'P', 3.75};
+    P1 = alokasi(x);
+    insertLast(L, P1);
+
+    x.nim = "07";
+    P1 = findElm(L, x);
+    x = {"Cindi", "03", 'P', 3.5};
+    P2 = alokasi(x);
+    insertAfter(L, P1, P2);
+
+    x.nim = "02";
+    P1 = findElm(L, x);
+    x = {"Hani", "08", 'P', 3.3};
+    P2 = alokasi(x);
+    insertAfter(L, P1, P2);
+
+    x.nim = "04";
+    P1 = findElm(L, x);
+    x = {"Eli", "05", 'P', 3.4};
+    P2 = alokasi(x);
+    insertAfter(L, P1, P2);
+
+    printInfo(L);
+
+    return 0;
+}
+```
+
+#### Output:
+<img width="580" height="864" alt="image" src="https://github.com/user-attachments/assets/7a9a7a64-0db1-4f65-baa7-7af0f87f215f" />
+
+
+Program ini dibuat untuk mengelola data mahasiswa dengan menggunakan struktur Multi Linked List yang berbentuk melingkar (circular). Setiap node menyimpan informasi mahasiswa dan saling terhubung sehingga membentuk sebuah rangkaian tertutup. Di dalam program ini tersedia fitur penambahan data, penghapusan data, pencarian, serta penampilan data mahasiswa. Melalui program ini, pengguna dapat berlatih memahami cara kerja pointer dan hubungan antar node pada struktur data.
+
+#### Full code Screenshot:
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a7aad8ac-69e6-4002-bdb3-8fde770dda0a" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/aaa03e3a-1e66-4506-9dd2-628d4946992d" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a049d011-5fdf-4b12-bdb5-1eed3f36e35a" />
+
+
+## Kesimpulan
+Berdasarkan hasil praktikum dan pembelajaran pada Modul 13, dapat disimpulkan bahwa materi yang dibahas mengenai Multi Linked List (MLL) sangat membantu dalam memahami pengelolaan data yang kompleks dan saling berelasi. MLL memanfaatkan penggunaan pointer untuk menghubungkan data parent dan child, sehingga mahasiswa dapat memahami konsep alokasi memori, hubungan antar data, serta cara kerja struktur data secara lebih nyata. Melalui praktikum ini, pemahaman terhadap operasi dasar seperti insert, delete, dan search menjadi lebih mendalam, karena setiap operasi harus memperhatikan keterkaitan antar node. Selain itu, pembelajaran MLL juga melatih ketelitian dan logika dalam merancang struktur data yang efisien dan terorganisir.
+
+## Referensi
+[1] I. Holm, Narrator, and J. Fullerton-Smith, Producer, How to Build a Human [DVD]. London: BBC; 2002.
+
+Keluaran:
+tangkapan layar
+
+Tangkapan Layar Kode Lengkap:
+tangkapan layar
+
